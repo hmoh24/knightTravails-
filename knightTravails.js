@@ -21,3 +21,57 @@
 //return these with full path
 
 //nice to have - GUI that shows steps - user can place knight or click random button, start, and show short paths
+
+//INPUT: [x, y], finalPosition
+//store in previousPositions Array
+//compare to final position, if it's valid return vertex (or edge sequence)
+//calculate all possible moves,
+//filter out any edge with vertex <0 and 7<
+//filter out any position that is in previousPositions Array
+// return 2d array with possible moves
+// push starting move to get to that position into it's 2d array so that it's like [[nextMove], [prevMove]]
+// push this 2d array into a queue, and all other valid moves 2d array into queue
+// evaluate next item and repeat until match
+
+let previousMovesArray = [];
+let movesQueue = [];
+
+function knightTravails(inputPosition, finalPosition) {
+  if (inputPosition[0] === finalPosition) return [inputPosition];
+  if (previousMovesArray.includes(inputPosition) === false)
+    previousMovesArray.push(inputPosition);
+
+  let validMovesArray = calculatePossibleMoves(inputPosition).filter(
+    (innerArray) => {
+      return (
+        innerArray[0] >= 0 &&
+        innerArray[0] <= 7 &&
+        innerArray[1] >= 0 &&
+        innerArray[1] <= 7
+      );
+    }
+  );
+  let uniqueMovesArray = validMovesArray.filter((position) => {
+    return !previousMovesArray.includes(position);
+  });
+  uniqueMovesArray.forEach((position) => {
+    if (previousMovesArray.includes(position) === false)
+      previousMovesArray.push(position);
+  });
+}
+
+function calculatePossibleMoves(inputPosition) {
+  return [
+    [inputPosition[0] + 2, inputPosition[1] - 1],
+    [inputPosition[0] + 2, inputPosition[1] + 1],
+    [inputPosition[0] - 2, inputPosition[1] - 1],
+    [inputPosition[0] - 2, inputPosition[1] + 1],
+    [inputPosition[0] - 1, inputPosition[1] + 2],
+    [inputPosition[0] + 1, inputPosition[1] + 2],
+    [inputPosition[0] - 1, inputPosition[1] - 2],
+    [inputPosition[0] + 1, inputPosition[1] - 2],
+  ];
+}
+
+console.log(knightTravails([3, 2], [5, 5]));
+console.log("Prev:", previousMovesArray);
